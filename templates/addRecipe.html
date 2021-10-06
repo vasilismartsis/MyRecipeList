@@ -1,0 +1,123 @@
+{% extends 'content.html' %}
+
+{% block head %}
+<title>Add a Recipe</title>
+<style>
+    form input,
+    textarea {
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 10px;
+    }
+
+    form {
+        align-content: center;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .content {
+        min-height: 100%;
+        margin: 0 auto 14.5%;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="content" style="text-align: center;">
+    <div style="height: 70px;"></div>
+
+    <div id="status">
+        {% if status == "success" %}
+        <div id="status" style="color: green;">
+            <h2><u>Your recipe was added succesfully!<br>Add another?</u></h2>
+        </div>
+        {% elif status == "alreadyExists" %}
+        <div id="status" style="color: red;">
+            <h2><u>Your recipe already exists!</u></h2>
+        </div>
+        {% endif %}
+    </div>
+
+
+    <h1>Add Your Recipe</h1>
+
+    <form action="#" method="POST" style="display: inline-block; margin-top: 1%;">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" placeholder="My Recipy...">
+        <label for="image">Image:</label>
+        <input type="url" name="image" id="image" placeholder="https://myImage.jpg">
+        <label for="link">Recipe Link (Optional):</label>
+        <input type="url" title="link" name="link" id="link" placeholder="http://www.myRecipyLink.com/...">
+        <h5><b>OR</b></h5>
+        <label for="link">Description:</label>
+        <textarea name="description" id="description" cols="30" rows="10"
+            placeholder="First add a cup of water..."></textarea>
+
+        <input type="text" name="ingredients" id="ingredients" placeholder="Ingredients" hidden>
+
+        <button type="submit" id="submit" style="margin-top: 20px;" hidden>Send your Recipe</button>
+    </form>
+
+    <label for="inputsDiv" style="display: block;">Ingredients</label>
+    <div id="inputsDiv">
+        <input type="text" placeholder="Salt..." onkeyup="replaceUnwantedString(this), addnewInput(this)">
+    </div>
+    <button style="margin-top: 40px; background-color: seagreen;" onclick="clickSubmit()">Send your Recipe</button>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    function clickSubmit()
+    {
+        document.getElementById("submit").click();
+    }
+
+    //every time I add a number inside the input, if its not a number delete it
+    function replaceUnwantedString(x) 
+    {
+        x.value = x.value.replace(",", "");
+        x.value = x.value.replace(/^\s/g, "");
+        x.value = x.value.replace(/\s$/g, "");
+    }
+
+    function addnewInput(x)
+    {
+        var emptyInputs = 0;
+        var inputsDiv = document.getElementById("inputsDiv");
+        var ingredients = document.getElementById("ingredients");
+        var finalValue = "";
+
+        //remove input 
+        for (var i = 0; i < inputsDiv.children.length; i++)
+        {
+            if (inputsDiv.children[i].value == "")
+            {
+                emptyInputs++;
+
+                if (emptyInputs > 1)
+                {
+                    inputsDiv.children[i].remove();
+                }
+            }
+            else
+            {
+                //add all values from inputsDiv inputs to the form input, seperated by comas
+                finalValue += inputsDiv.children[i].value + ",";
+            }
+        }
+
+        //fill form input value, removing last comma
+        ingredients.value = finalValue.substring(0, finalValue.length - 1);
+
+        //add input 
+        if (emptyInputs == 0)
+        {
+            var newInput = x.cloneNode();
+            x.parentElement.appendChild(newInput);
+            newInput.value = "";
+        }
+    }
+</script>
+{% endblock %}

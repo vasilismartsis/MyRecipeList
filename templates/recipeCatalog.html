@@ -1,0 +1,157 @@
+{% extends 'content.html' %}
+<!DOCTYPE html>
+<html>
+
+{% block head %}
+
+<head>
+    <title>MyRecipeList</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <link href='{{ url_for("static", filename="css/bootstrap.css") }}' rel='stylesheet' />
+
+    <link href='{{ url_for("static", filename="css/pe-icon-7-stroke.css") }}' rel="stylesheet" />
+
+    <link href='{{ url_for("static", filename="css/rotating-card.css") }}' rel='stylesheet' />
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin-top: 100px;
+        }
+
+        .navbar-default .navbar-nav>li>a {
+            padding: 15px 15px;
+            margin: 5px 0;
+        }
+
+        .navbar-default {
+            padding: 10px 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-color: transparent;
+            box-shadow: 0 0px 13px rgba(0, 0, 0, .2);
+        }
+
+        .btn-info,
+        .btn-info:hover,
+        .btn-info:focus {
+            color: #FFF !important;
+            background-color: #00bbff !important;
+            border-color: #00bbff !important;
+        }
+
+        .btn-info {
+            opacity: .8;
+            transition: all 0.1s;
+            -webkit-transition: all 0.1s;
+        }
+
+        .btn-info:hover,
+        .btn-info:focus {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+{% endblock %}
+
+<body>
+    {% block main %}
+    <div style="margin: 11.1%;">
+        <div class="container">
+            <div class="row">
+                <h1 class="title">
+                    MyRecipeList
+                    <br>
+                    <small>Search for Recipes</small>
+                </h1>
+
+                <input id="searchInput" placeholder="Sugar, Honey, Cheese"
+                    style="position: relative; left: 35%; top: 37%;">
+                <button id="searchButton" style="position: relative; left: 35%;"
+                    onclick="getRecipeButtonPressed(document.getElementById('searchInput').value)">Search By Ingredients
+                </button>
+                <p></p>
+                <div style="align-content: center; text-align: center;">
+                    <label for="shortingTypeCheckbox">Ignore typical pantry items, such as water, salt, flour,
+                        etc:</label>
+                    <input type="checkbox" id="shortingTypeCheckbox">
+                </div>
+                <p>
+                    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                </p>
+
+                <div class="col-sm-10 col-sm-offset-1" , id="bootstrapCardsDiv">
+                    {% include "bootstrapCard.html" %}
+                </div> <!-- end col-sm-10 -->
+            </div>
+        </div> <!-- end row -->
+
+
+        <div class="space-50"></div>
+
+        <div style="align-content: center; text-align: center;">
+            <button style="margin: auto;" onclick="MoreRecipes()">Show more results</button>
+        </div>
+
+        <div class="space-50"></div>
+    </div>
+    {% endblock %}
+
+    {% block script %}
+    {% include "foodApi.html" %}
+
+    <script type="text/javascript">
+        // $().ready(function ()
+        // {
+        //     $('[rel="tooltip"]').tooltip();
+
+        //     $('a.scroll-down').click(function (e)
+        //     {
+        //         e.preventDefault();
+        //         scroll_target = $(this).data('href');
+        //         $('html, body').animate({
+        //             scrollTop: $(scroll_target).offset().top - 60
+        //         }, 1000);
+        //     });
+
+        // });
+
+        function rotateCard(btn)
+        {
+            var $card = $(btn).closest('.card-container');
+            console.log($card);
+            if ($card.hasClass('hover'))
+            {
+                $card.removeClass('hover');
+            } else
+            {
+                $card.addClass('hover');
+            }
+        }
+
+        // Get the input field
+        var input = document.getElementById("searchInput");
+
+        // Execute a function when the user releases a key on the keyboard
+        input.addEventListener("keyup", function (event)
+        {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13)
+            {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("searchButton").click();
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+
+</html>

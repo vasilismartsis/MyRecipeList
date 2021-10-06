@@ -1,0 +1,138 @@
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="static/js/asynchronousRequest.js"></script>
+<script>
+    var numberOfProductsShown = 6;
+    var moreRecipesCounter = 1;
+    var ignorePantry = false;
+
+    var keys = ["db254b5cd61744d39a2deebd9c361444", "8f18013ba3714f85af97c9eec2742d7b", "083acc2923c5416a9bb0876242da159e", "46427bab13444f2c862e1627e1f5e4e8"]
+
+    var apiKeyDefault = keys[0];
+
+    var lastSearchValue;
+
+    function getRecipeButtonPressed(value)
+    {
+        moreRecipesCounter = 1;
+        ignorePantry = document.getElementById("shortingTypeCheckbox").checked;
+
+        clearCards();
+
+        //Spoonacular API
+        getRecipe(value);
+        //My API
+        getMyDbRecipe(value);
+    }
+
+    function MoreRecipes()
+    {
+        clearCards();
+        moreRecipesCounter++;
+        getRecipe(lastSearchValue);
+    }
+
+    function getRecipe(value)
+    {
+        lastSearchValue = value;
+
+        $.ajax({
+            url: "https://api.spoonacular.com/recipes/findByIngredients?ignorePantry=" + ignorePantry + "&apiKey=" + apiKeyDefault + "&number=" + (numberOfProductsShown * moreRecipesCounter) + "&ranking=2&ingredients=" + value,
+            success: function (res)
+            {
+                var description = "";
+
+                for (recipe in res)
+                    getSource(res[recipe].id, description, res[recipe].title, res[recipe].image, res[recipe].missedIngredients, res[recipe].usedIngredients, res[recipe].unusedIngredients);
+            }
+        });
+    }
+    function getSource(id, description, title, image, missedIngredients, usedIngredients, unusedIngredients)
+    {
+        $.ajax({
+            url: "https://api.spoonacular.com/recipes/" + id + "/information?apiKey=" + apiKeyDefault,
+            success: function (res)
+            {
+                link = res.sourceUrl;
+
+                createCard(link, description, title, image, missedIngredients, usedIngredients, unusedIngredients);
+            }
+        });
+    }
+
+    function getMyDbRecipe(value)
+    {
+        asyncRequest(value, "getDbIngredients").then(function (response)
+        {
+            if (response.status !== 200)
+            {
+                console.log(`Response status was not 200, it was: ${response.status}`);
+                return;
+            }
+            else
+                response.json().then(function (res)
+                {
+                    for (recipe in res.slice(0, (numberOfProductsShown * moreRecipesCounter)))
+                        createCard(res[recipe].link, res[recipe].description, res[recipe].title, res[recipe].image, res[recipe].missedIngredients, res[recipe].usedIngredients, res[recipe].unusedIngredients);
+                })
+        });
+    }
+
+    var cardArray = [];
+
+    function clearCards()
+    {
+        for (var i = 0; i < cardArray.length; i++)
+            cardArray[i].remove();
+    }
+
+    function createCard(link, description, title, image, missedIngredients, usedIngredients, unusedIngredients)
+    {
+        var bootstrapCard = document.getElementById("bootstrapCard");
+        bootstrapCard.getElementsByClassName("cardTitle")[0].innerHTML = title;
+        bootstrapCard.getElementsByClassName("cardTitle2")[0].innerHTML = title;
+        bootstrapCard.getElementsByClassName("cardPhoto")[0].src = image;
+        bootstrapCard.getElementsByClassName("cardMissedIngredientsNumber")[0].innerHTML = missedIngredients.length;
+        bootstrapCard.getElementsByClassName("cardMissedIngredientsText")[0].innerHTML = "";
+        for (var i = 0; i < missedIngredients.length; i++)
+        {
+            bootstrapCard.getElementsByClassName("cardMissedIngredientsText")[0].innerHTML += missedIngredients[i]["name"];
+            if (i != missedIngredients.length - 1)
+                bootstrapCard.getElementsByClassName("cardMissedIngredientsText")[0].innerHTML += ", ";
+        }
+        bootstrapCard.getElementsByClassName("cardUsedIngredientsNumber")[0].innerHTML = usedIngredients.length;
+        bootstrapCard.getElementsByClassName("cardUsedIngredientsText")[0].innerHTML = "";
+        for (var i = 0; i < usedIngredients.length; i++)
+        {
+            bootstrapCard.getElementsByClassName("cardUsedIngredientsText")[0].innerHTML += usedIngredients[i]["name"];
+            if (i != usedIngredients.length - 1)
+                bootstrapCard.getElementsByClassName("cardUsedIngredientsText")[0].innerHTML += ", ";
+        }
+        bootstrapCard.getElementsByClassName("cardUnusedIngredientsNumber")[0].innerHTML = unusedIngredients.length;
+        bootstrapCard.getElementsByClassName("cardUnusedIngredientsText")[0].innerHTML = "";
+        for (var i = 0; i < unusedIngredients.length; i++)
+        {
+            bootstrapCard.getElementsByClassName("cardUnusedIngredientsText")[0].innerHTML += unusedIngredients[i]["name"];
+            if (i != unusedIngredients.length - 1)
+                bootstrapCard.getElementsByClassName("cardUnusedIngredientsText")[0].innerHTML += ", ";
+        }
+
+        var bootstrapCardClone = bootstrapCard.cloneNode(true);
+        bootstrapCardClone.removeAttribute("hidden");
+
+        if (link != "")
+            bootstrapCardClone.getElementsByClassName("cardLink")[0].href = link;
+        else
+        {
+            bootstrapCardClone.getElementsByClassName("cardLink")[0].href = "#";
+
+            bootstrapCardClone.getElementsByClassName("cardLink")[0].addEventListener("click", function ()
+            {
+                var tab = window.open('about:blank', '_blank');
+                tab.document.write("<textarea style='width:100%; height:100%'>" + description + "</textarea>"); // where 'html' is a variable containing your HTML
+                tab.document.close();
+            });
+        }
+
+        cardArray.push(document.getElementById("bootstrapCardsDiv").appendChild(bootstrapCardClone));
+    }
+</script>

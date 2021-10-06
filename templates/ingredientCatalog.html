@@ -1,0 +1,56 @@
+{% extends 'content.html' %}
+{% block content %}
+<h2>Select Ingredients:</h2>
+<input type="text" , placeholder="Search Ingredient" , onkeyup="getIngredients(this.value)">
+
+<div id="ingredientCheckboxes"></div>
+{% endblock %}
+
+{% block script %}
+<script src="static/js/asynchronousRequest.js"></script>
+<script>
+    getIngredients("");
+
+    function getIngredients(value)
+    {
+        asyncRequest(value, "sendIngredients").then(function (response)
+        {
+            if (response.status !== 200)
+            {
+                console.log(`Response status was not 200, it was: ${response.status}`);
+                return;
+            }
+            else
+            {
+                response.json().then(function (data)
+                {
+                    displayIngredients(data);
+                })
+            }
+        });
+    }
+
+    function displayIngredients(data)
+    {
+        createIngredientCheckboxes(data);
+    }
+
+    function createIngredientCheckboxes(data)
+    {
+        var ingredientCheckboxesDiv = document.getElementById("ingredientCheckboxes");
+        ingredientCheckboxesDiv.innerHTML = "";
+
+        for (ingredient in data)
+        {
+            var div = document.createElement("div");
+            ingredientCheckboxesDiv.appendChild(div);
+            var label = document.createElement("label");
+            label.innerHTML = data[ingredient]["name"]
+            div.appendChild(label);
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            div.appendChild(checkbox);
+        }
+    }
+</script>
+{% endblock %}
