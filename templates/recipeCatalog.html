@@ -63,43 +63,45 @@
 <body>
     {% block main %}
     <div style="margin: 11.1%;">
-        <div class="container">
+        <div>
             <div class="row">
-                <h1 class="title">
+                <h1 class="title" style="margin-bottom: 3rem;">
                     MyRecipeList
                     <br>
                     <small>Search for Recipes</small>
                 </h1>
-
-                <input id="searchInput" placeholder="Sugar, Honey, Cheese"
-                    style="position: relative; left: 35%; top: 37%;">
-                <button id="searchButton" style="position: relative; left: 35%;"
-                    onclick="getRecipeButtonPressed(document.getElementById('searchInput').value)">Search By Ingredients
-                </button>
+                <p style="align-content: center; text-align: center; margin-bottom: 3rem;"><i>* write down the
+                        ingredients
+                        you have available</i></p>
+                <div style="align-content: center; text-align: center;">
+                    <input id="searchInput" placeholder="Sugar, Honey, Cheese">
+                    <button id="searchButton"
+                        onclick="getRecipeButtonPressed(document.getElementById('searchInput').value)">Search By
+                        Ingredients
+                    </button>
+                </div>
                 <p></p>
                 <div style="align-content: center; text-align: center;">
                     <label for="shortingTypeCheckbox">Ignore typical pantry items, such as water, salt, flour,
                         etc:</label>
                     <input type="checkbox" id="shortingTypeCheckbox">
                 </div>
-                <p>
-                    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-                </p>
 
                 <div class="col-sm-10 col-sm-offset-1" , id="bootstrapCardsDiv">
                     {% include "bootstrapCard.html" %}
                 </div> <!-- end col-sm-10 -->
             </div>
+            <div class="space-50"></div>
+
+            <div style="align-content: center; text-align: center;">
+                <button style="margin: auto;" onclick="MoreRecipes()">Show more results</button>
+            </div>
+
+            <div style="height: 10.5ex"></div>
         </div> <!-- end row -->
 
 
-        <div class="space-50"></div>
 
-        <div style="align-content: center; text-align: center;">
-            <button style="margin: auto;" onclick="MoreRecipes()">Show more results</button>
-        </div>
-
-        <div class="space-50"></div>
     </div>
     {% endblock %}
 
